@@ -1,6 +1,8 @@
 Checker Framework Method-Chaining Performance Regression
 ========================================================
 
+The bug was fixed in https://github.com/typetools/checker-framework/issues/2853.
+
 This repository contains a code that demonstrates a performance regression in the [checker framework](https://checkerframework.org/). The
 performance regression affects source code that uses long [method chains](https://en.wikipedia.org/wiki/Method_chaining). The performance
 regression was introduced in versions 2.10.0 and 3.0.0. The performance in version 2.9.0 is OK.
