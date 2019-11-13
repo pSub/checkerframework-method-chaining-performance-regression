@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.psub</groupId>
+    <artifactId>checkerframework-method-chaining-performance-regression</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!-- <checker.framework.version>2.9.0</checker.framework.version> --> <!-- Performance is OK -->
+        <checker.framework.version>2.10.0</checker.framework.version> <!-- Performance is BAD -->
+        <!-- <checker.framework.version>3.0.0</checker.framework.version> --> <!-- Performance is BAD -->
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <useIncrementalCompilation>false</useIncrementalCompilation>
+                    <annotationProcessors>
+                        <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>
+                    </annotationProcessors>
+
+                    <compilerArgs>
+                        <arg>-Xbootclasspath/p:${org.checkerframework:jdk8:jar}</arg>
+                        <!--<arg>-AprintErrorStack</arg>-->
+                        <arg>-Astubs=checkerframework/stubs</arg>
+                        <arg>-AstubWarnIfNotFound</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker</artifactId>
+            <version>${checker.framework.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>jdk8</artifactId>
+            <version>${checker.framework.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>${checker.framework.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>jdk8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <properties>
+                <javac.version>9-dev-r4023-3</javac.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.google.errorprone</groupId>
+                    <artifactId>javac</artifactId>
+                    <version>9-dev-r4023-3</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <fork>true</fork>
+                            <compilerArgs combine.children="append">
+                                <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
